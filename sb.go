@@ -12,12 +12,14 @@ var saloonCapacity int = 1
 var clientCount int = 10
 var barberCount int = 1
 
-//
+// Barbers semaphore, saloon channel used both for synchronisation and queueing clients,
+// waiting variable keeps track of clients in the saloon, mutex for critical section
 var barbers = make(chan int)
+var saloon = make(chan int, saloonCapacity)
 var waiting int = 0
 var mutex sync.Mutex
-var saloon = make(chan int, saloonCapacity)
 
+// WaitGroups to avoid deadlock
 var cWg sync.WaitGroup
 var bWg sync.WaitGroup
 

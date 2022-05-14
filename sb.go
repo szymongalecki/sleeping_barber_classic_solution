@@ -31,13 +31,8 @@ func barber(id int) {
 	defer bWg.Done()
 
 	for client := range saloon {
-
-		// One seat becomes free, one customer is served
-		mutex.Lock()
-		waiting--
+		// One customer is served
 		barbers <- 1
-		mutex.Unlock()
-
 		fmt.Printf("Barber%d: cuts Client%d\n", id, client)
 		sleep()
 	}
@@ -56,6 +51,11 @@ func client(id int) {
 
 		// Waits to be served
 		<-barbers
+
+		// Client leaves saloon
+		mutex.Lock()
+		waiting--
+		mutex.Unlock()
 
 	} else {
 		// Saloon is full, client leaves
